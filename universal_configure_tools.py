@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import subprocess
 import requests
@@ -36,9 +37,9 @@ if not os.path.isdir(cert_dir):
 tenant_name = input('Please provide full tenant name (ex: mytenant.eu.goskope.com): ')
 org_key = input('Please provide tenant orgkey: ')
 
-status_code = requests.get(f'https://{tenant_name}/locallogin', verify=False).status_code
+status_code = requests.get(f'https://{tenant_name}/locallogin').status_code
 
-if status_code != 307:
+if status_code !=200:
     print('Tenant Unreachable')
     exit(1)
 else:
@@ -77,7 +78,7 @@ def set_env_var(env_var, value):
     else:
         with open(shell, 'a') as f:
             f.write(f'export {env_var}="{value}"\n')
-        subprocess.run(f'source {shell}', shell=True)
+        subprocess.run(f'source', shell=True)
 
 def configure_tool(tool_name, env_var, check_command, post_command=None):
     print()
@@ -104,22 +105,22 @@ def configure_tool(tool_name, env_var, check_command, post_command=None):
         print(f'{tool_name} is not installed')
 
 tools = [
-    ("Git", "GIT_SSL_CAPATH", "git"),
-    ("OpenSSL", "SSL_CERT_FILE", "openssl"),
-    ("cURL", "SSL_CERT_FILE", "curl"),
-    ("Python Requests Library", "REQUESTS_CA_BUNDLE", None),
-    ("AWS CLI", "AWS_CA_BUNDLE", "aws"),
+    ("Git", "GIT_SSL_CAPATH", "git",""),
+    ("OpenSSL", "SSL_CERT_FILE", "openssl",""),
+    ("cURL", "SSL_CERT_FILE", "curl",""),
+    ("Python Requests Library", "REQUESTS_CA_BUNDLE", "", ""),  # Adjusted this line
+    ("AWS CLI", "AWS_CA_BUNDLE", "aws",""),
     ("Google Cloud CLI", None, "gcloud", f'gcloud config set core/custom_ca_certs_file {cert_dir}/{cert_name}'),
     ("NodeJS Package Manager (NPM)", None, "npm", f'npm config set cafile {cert_dir}/{cert_name}'),
-    ("NodeJS", "NODE_EXTRA_CA_CERTS", "node"),
-    ("Ruby", "SSL_CERT_FILE", "ruby"),
+    ("NodeJS", "NODE_EXTRA_CA_CERTS", "node",""),
+    ("Ruby", "SSL_CERT_FILE", "ruby",""),
     ("PHP Composer", None, "composer", f'composer config --global cafile {cert_dir}/{cert_name}'),
-    ("GoLang", "SSL_CERT_FILE", "go"),
-    ("Azure CLI", "REQUESTS_CA_BUNDLE", "az"),
-    ("Python PIP", "REQUESTS_CA_BUNDLE", "pip"),
-    ("Oracle Cloud CLI", "REQUESTS_CA_BUNDLE", "oci"),
-    ("Cargo Package Manager", "SSL_CERT_FILE", "cargo"),
-    ("Yarn", None, "yarn", f'yarn config set httpsCaFilePath {cert_dir}/{cert_name}')
+    ("GoLang", "SSL_CERT_FILE", "go",""),
+    ("Azure CLI", "REQUESTS_CA_BUNDLE", "az",""),
+    ("Python PIP", "REQUESTS_CA_BUNDLE", "pip",""),
+    ("Oracle Cloud CLI", "REQUESTS_CA_BUNDLE", "oci",""),
+    ("Cargo Package Manager", "SSL_CERT_FILE", "cargo",""),
+    ("Yarn", None, "yarnpkg", f'yarnpkg config set httpsCaFilePath {cert_dir}/{cert_name}')
 ]
 
 for tool_name, env_var, check_command, post_command in tools:
@@ -146,4 +147,3 @@ else:
 #
 # Example for adding a hypothetical tool "MyTool":
 # configure_tool("MyTool", "MYTOOL_CA_CERTS", "mytool", f'mytool config set cafile {cert_dir}/{cert_name}')
-
