@@ -47,7 +47,7 @@ create_cert_bundle() {
   echo "Creating cert bundle"
   curl -k "https://addon-$tenantName/config/ca/cert?orgkey=$orgKey" > $certDir/$certName
   curl -k "https://addon-$tenantName/config/org/cert?orgkey=$orgKey" >> $certDir/$certName
-  curl -k -L "https://ccadb-public.secure.force.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites" >> $certDir/$certName
+  curl -k -L "https://ccadb.my.salesforce-sites.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites" >> $certDir/$certName
 }
 
 if [ -f "$certDir/$certName" ]; then
