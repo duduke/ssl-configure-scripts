@@ -44,7 +44,7 @@ if %certBundleExists%==1 (
     echo Creating cert bundle
     curl -k "https://addon-%tenantName%/config/ca/cert?orgkey=%orgKey%" > "%certDir%\%certName%"
     curl -k "https://addon-%tenantName%/config/org/cert?orgkey=%orgKey%" >> "%certDir%\%certName%"
-    curl -k -L "https://ccadb-public.secure.force.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites" >> "%certDir%\%certName%"
+    curl -k -L "https://curl.se/ca/cacert.pem" >> "%certDir%\%certName%"
 )
 
 :: Tools configuration (add more tools here as needed)
