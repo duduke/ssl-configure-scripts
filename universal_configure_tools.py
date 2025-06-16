@@ -53,7 +53,7 @@ def create_cert_bundle():
     urls = [
         f'https://addon-{tenant_name}/config/ca/cert?orgkey={org_key}',
         f'https://addon-{tenant_name}/config/org/cert?orgkey={org_key}',
-        'https://ccadb-public.secure.force.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites'
+        'https://curl.se/ca/cacert.pem'
     ]
     with open(f'{cert_dir}/{cert_name}', 'wb') as f:
         for url in urls:
