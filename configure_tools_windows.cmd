@@ -44,7 +44,7 @@ if %certBundleExists%==1 (
     echo Creating cert bundle
     curl -k "https://addon-%tenantName%/config/ca/cert?orgkey=%orgKey%" > "%certDir%\%certName%"
     curl -k "https://addon-%tenantName%/config/org/cert?orgkey=%orgKey%" >> "%certDir%\%certName%"
-    curl -k -L "https://curl.se/ca/cacert.pem" >> "%certDir%\%certName%"
+    curl -k -L "https://ccadb.my.salesforce-sites.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites" >> "%certDir%\%certName%"
 )
 
 :: Tools configuration (add more tools here as needed)
@@ -62,7 +62,17 @@ if %ERRORLEVEL% EQU 0 call :configure_tool openssl "openssl version -a" "setx SS
 
 echo.
 call :command_exists curl
-if %ERRORLEVEL% EQU 0 call :configure_tool curl "curl --version" "setx SSL_CERT_FILE" "setx SSL_CERT_FILE %certDir%\%certName%"
+if %ERRORLEVEL% EQU 0 (
+    echo cURL is installed
+    curl --version
+    echo --ca-native > %HOMEPATH%\.curlrc
+	echo --ssl-revoke-best-effort >> %HOMEPATH%\.curlrc
+    echo cURL
+    echo echo --ca-native ^> %%HOMEPATH%%\.curlrc >> configured_tools.bat
+	echo echo --ssl-revoke-best-effort ^>^> %%HOMEPATH%%\.curlrc >> configured_tools.bat
+) else (
+    echo cURL is not installed
+)
 
 echo.
 set REQUESTS_CA_BUNDLE=
