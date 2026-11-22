@@ -3,18 +3,12 @@
 Scripts for Linux, macOS and Windows that detect popular CLI tools, libraries and frameworks on a device that goes
 through SSL inspection (MITM), and configure them to trust the Netskope certificate bundle.
 
-> **Heads up:** the old shell/cmd scripts and `universal_configure_tools.py` used the
-> `addon-<tenant>/config/ca/cert?orgkey=` URLs and disabled TLS verification. Those URLs no longer work on tenants
-> with Secure Configuration / Secure Enrollment, so the scripts moved to [`legacy/`](legacy/) and are kept for
-> reference only. Use the Python toolset below.
-
 ## Repository layout
 | Path | Purpose |
 |------|---------|
 | `ns_configure_tools.py` | Interactive. Gets the bundle, detects tools, configures the ones you pick, saves `ns_tools_config.json`. |
 | `ns_deploy_tools.py` | Unattended, for MDM. No prompts, no scanning, no downloading. Replays the saved config. |
 | `ns_tools_common.py` | Shared tool definitions and helpers. Must sit next to both scripts. |
-| `legacy/` | The previous scripts (obsolete certificate download). Not maintained. |
 
 Configures developer tools (git, npm, pip, AWS CLI, gcloud, Java, ...) to trust the Netskope SSL-inspection
 certificate bundle. Standard library only, Python 3.8+. Windows, macOS, Linux.
