@@ -16,10 +16,15 @@ through SSL inspection (MITM), and configure them to trust the Netskope certific
 | `ns_tools_common.py` | Shared tool definitions and helpers. Must sit next to both scripts. |
 | `legacy/` | The previous scripts (obsolete certificate download). Not maintained. |
 
-Configure developer tools (git, npm, pip, AWS CLI, gcloud, Java, ...) to trust the Netskope
-SSL-inspection certificate bundle. Standard library only, Python 3.8+. Windows, macOS, Linux.
+Configures developer tools (git, npm, pip, AWS CLI, gcloud, Java, ...) to trust the Netskope SSL-inspection
+certificate bundle. Standard library only, Python 3.8+. Windows, macOS, Linux.
 
-Based on the "SSL Inspection - Development Tools / CLI Tools" Confluence article.
+## Quick start
+    export NETSKOPE_API_TOKEN=<token with read access to /api/v2/services/certs/subordinates>
+    python ns_configure_tools.py --tenant mytenant.eu.goskope.com
+
+No token? Run `python ns_configure_tools.py` and point it at the Root and Intermediate certificates you downloaded
+from **Settings > Manage > Certificates > Signing CA**. Details below.
 
 Config (`ns_tools_config.json`) and log (`ns_tools.log`) are written next to the scripts, so the folder is portable.
 
@@ -79,7 +84,9 @@ Exit codes: `0` all applied, `1` some tools failed, `2` bundle or config problem
 * **Informational only (no automatic change):** NuGet on Linux/Mac (unconfirmed, OS store is the practical fix),
   Arduino IDE (1.x only, no known method for 2.x), Snowflake ODBC (3.x vs 4.x config files differ),
   JetBrains (IDE-only scope), Azure Storage Explorer (import all chain certs).
-* Not verified at all: Docker, SwiftPM, Android Studio, Gradle, Kubernetes and others listed in the Confluence draft.
+* Not verified against vendor docs, so no automatic change is made: Docker, SwiftPM, Gradle, Kubernetes, Sourcetree, svn,
+  GitLab CLI, Fastlane, Heroku CLI, Amplify, Oracle Cloud CLI, OpenAI API, Zypper, Yum, Ruby, Go, Shopify CLI and PNPM.
+  Android Studio's default keystore password (`changeit`) should be checked on your machine.
 
 ## Notes
 * The config is OS-specific. Create one per OS. The deploy script refuses a config from another OS.
@@ -87,10 +94,10 @@ Exit codes: `0` all applied, `1` some tools failed, `2` bundle or config problem
 * Environment variables apply to **new** terminals only.
 * Tools that cannot be automated (JetBrains, Azure Storage Explorer, Docker, kubectl, ...) are listed with instructions.
 * `NS_BUNDLE_DIR` overrides where the bundle is installed (useful for testing).
-* Rotate any API token that has been pasted into a chat, ticket or script.
+* Use a token limited to read access on the certificate endpoint, and rotate it if it was ever exposed (chat, ticket, script).
 
 ## Status
 Developed and tested on Linux, including the Yarn (Classic and Berry), Mercurial and Conda paths
 using stub executables. The API download was tested only against a local mock server (success, header fallback,
-401/403, HTTP 500, bad JSON, empty list, no PEM, untrusted TLS). It has **not** been run against a real tenant. The Windows and macOS code paths follow the documented behaviour but have not
-yet been run on those systems. Test before wide deployment.
+401/403, HTTP 500, bad JSON, empty list, no PEM, untrusted TLS). It has **not** been run against a real tenant. The Windows and macOS code paths follow the documented behaviour but
+have not yet been run on those systems. Test before wide deployment.
